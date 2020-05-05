@@ -2,7 +2,7 @@ const axios = require('axios')
 
 const { SMS } = require('../models/sms')
 
-const SPRING_EDGE_API_KEY = ''
+const SPRING_EDGE_API_KEY = process.env.SPRING_EDGE_API_KEY
 
 const sendSingleSpringEdgeSMS = async ({ userId, senderId, mobileNo, message }) => {
 // http://<SMS_Service_URL>/api/web/send?apikey=<API_KEY>&to=9900XXXXXX&sender=DEMO&message=THISIS

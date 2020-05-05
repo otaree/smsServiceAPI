@@ -2,21 +2,19 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const _ = require('lodash')
 
-const UserSchema = new mongoose.Schema({
+const AdminSchema = new mongoose.Schema({
   name: String,
-  password: String,
-  senderId: String,
-  smsCredit: Number
+  password: String
 }, {
   timestamps: true
 })
 
-UserSchema.pre('save', function (next) {
-  const user = this
-  if (user.isModified('password')) {
+AdminSchema.pre('save', function (next) {
+  const admin = this
+  if (admin.isModified('password')) {
     bcrypt.genSalt(12, (_, salt) => {
-      bcrypt.hash(user.password, salt, (_, hash) => {
-        user.password = hash
+      bcrypt.hash(admin.password, salt, (_, hash) => {
+        admin.password = hash
         next()
       })
     })
@@ -34,12 +32,12 @@ const comparePassword = function (password) {
   })
 }
 
-UserSchema.methods.comparePassword = comparePassword
+AdminSchema.methods.comparePassword = comparePassword
 
-UserSchema.methods.toJSON = function () {
+AdminSchema.methods.toJSON = function () {
   return _.omit(this.toObject(), ['password', '__v'])
 }
 
-const User = mongoose.model('User', UserSchema)
+const Admin = mongoose.model('Admin', AdminSchema)
 
-module.exports = { User }
+module.exports = { Admin }
