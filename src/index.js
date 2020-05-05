@@ -19,6 +19,9 @@ db.on('error', console.error.bind(console, 'connection error:'))
 
 const app = express()
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+
 app.use('/admin', adminRoutes)
 app.use('/user', userRoutes)
 

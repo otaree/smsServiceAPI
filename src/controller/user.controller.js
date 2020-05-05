@@ -22,6 +22,7 @@ const registerUser = async (req, res) => {
     await check('password', 'Password must be between 8 and 16 characters. Should contain at least one alphabet, one number.').custom((value) => passwordSchema.validate(value)).run(req)
     await check('confirm_password', 'Confirm password does not match with password').equals(req.body.password).run(req)
     await check('smsCredit', 'SMS Credit should be a integer').isNumeric().run(req)
+    await check('senderId', 'Sender Id must be 6 character long').isLength({ min: 6, max: 6 }).run(req)
 
     const errors = validationResult(req)
 
@@ -29,7 +30,7 @@ const registerUser = async (req, res) => {
       return res.status(422).send({ errors: errors.array() })
     }
 
-    const { name, password, smsCredit } = req.body
+    const { name, password, smsCredit, senderId } = req.body
 
     let user = await User.findOne({ name })
 
@@ -49,13 +50,15 @@ const registerUser = async (req, res) => {
     user = new User({
       name,
       password,
-      smsCredit
+      smsCredit,
+      senderId
     })
 
     await user.save()
 
     res.send(user)
   } catch (error) {
+    console.error('ERROR', error)
     res.status(500).send()
   }
 }
@@ -84,6 +87,7 @@ const loginUser = async (req, res) => {
 
     res.header('x-auth', token).send(user)
   } catch (error) {
+    console.error('ERROR', error)
     res.status(500).send()
   }
 }
@@ -91,6 +95,7 @@ const loginUser = async (req, res) => {
 const sendSMS = async (req, res) => {
   try {
     await check('mobile', 'Mobile no. is not valid').custom((value) => /^(6|7|8|9)\d{9}$/.test(value)).run(req)
+    await check('message', 'Message must be at least 4 characters long').isLength({ min: 4 }).run(req)
 
     const errors = validationResult(req)
 
