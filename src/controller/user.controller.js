@@ -71,14 +71,14 @@ const loginUser = async (req, res) => {
       return res.status(422).send({ errors: errors.array() })
     }
 
-    const { mobile, password } = req.body
+    const { name, password } = req.body
 
-    const user = await User.findOne({ mobile })
+    const user = await User.findOne({ name })
 
-    if (!user) return res.status(401).send({ error: { msg: 'Incorrect  mobile no. or password' } })
+    if (!user) return res.status(401).send({ error: { msg: 'Incorrect  name or password' } })
 
     const isPasswordCorrect = await user.comparePassword(password)
-    if (!isPasswordCorrect) return res.status(401).send({ error: { msg: 'Incorrect  mobile no. or password' } })
+    if (!isPasswordCorrect) return res.status(401).send({ error: { msg: 'Incorrect  name or password' } })
 
     const token = jwt.sign({ id: user._id, user: true }, JWT_SECRET, { expiresIn: '365d' })
 

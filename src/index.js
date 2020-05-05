@@ -2,6 +2,9 @@ require('dotenv-safe').config()
 const express = require('express')
 const mongoose = require('mongoose')
 
+const adminRoutes = require('./routes/admin.route')
+const userRoutes = require('./routes/user.route')
+
 const PORT = process.env.PORT || 5000
 const MONGODB_URI = process.env.MONGODB_URI
 
@@ -16,6 +19,7 @@ db.on('error', console.error.bind(console, 'connection error:'))
 
 const app = express()
 
-app.get('/', (req, res) => res.send('HELLO WORLD'))
+app.use('/admin', adminRoutes)
+app.use('/user', userRoutes)
 
 app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`))
